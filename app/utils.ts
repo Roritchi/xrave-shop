@@ -48,6 +48,34 @@ function isUser(user: any): user is User {
   return user && typeof user === "object" && typeof user.email === "string";
 }
 
+export function arrayPathByString(o: any, s: string) {
+  s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+  s = s.replace(/^\./, '');           // strip a leading dot
+  var a = s.split('.');
+  for (var i = 0, n = a.length; i < n; ++i) {
+      var k = a[i];
+      if (k in o) {
+          o = o[k];
+      } else {
+          return;
+      }
+  }
+  return o;
+}
+
+export function removeDuplicates(arr: any[], key: null|string = null): any[] {
+  if(!key) return arr.filter((item, pos) => {
+    return arr.indexOf(item) == pos;
+  })
+
+  return arr.filter((item, pos) => {
+    const value = arrayPathByString(item, key);
+    return !arr.find((item2, pos2) => {
+      return pos < pos2 && arrayPathByString(item2, key) == value;
+    })
+  })
+}
+
 export function useOptionalUser(): User | undefined {
   const data = useMatchesData("root");
   if (!data || !isUser(data.user)) {

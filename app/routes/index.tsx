@@ -1,8 +1,13 @@
 import { Link } from "@remix-run/react";
-
+import { redirect } from "@remix-run/server-runtime";
 import { useOptionalUser } from "~/utils";
 
+export async function loader() {
+  throw redirect('/shop');
+}
+
 export default function Index() {
+
   const user = useOptionalUser();
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">

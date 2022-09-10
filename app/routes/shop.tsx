@@ -2,6 +2,7 @@ import { Link, Outlet } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
+import { removeDuplicates } from "~/utils";
 
 export default function Index() {
     const [cart, setCart] = useState([]);
@@ -12,7 +13,7 @@ export default function Index() {
 
         // * Load Info from LocalStorage
         function onStorageChange() {
-            if(localStorage.getItem('cart')) setCart(c => c.concat(JSON.parse(localStorage.getItem('cart') as string)));
+            if(localStorage.getItem('cart')) setCart(c => removeDuplicates(c.concat(JSON.parse(localStorage.getItem('cart') as string)), 'id') as never[]);
         }
 
         window.addEventListener('storage', onStorageChange);
